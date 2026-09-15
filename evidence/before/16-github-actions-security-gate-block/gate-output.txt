@@ -1,0 +1,10 @@
+============================================
+AulaPay DevSecOps - Security Gate
+============================================
+BLOCK: SAST control failed.
+BLOCK: Secret scanning control failed.
+BLOCK: SCA control failed.
+BLOCK: API authorization control failed.
+============================================
+FINAL PIPELINE GATE DECISION: BLOCK
+Error: Process completed with exit code 1.
