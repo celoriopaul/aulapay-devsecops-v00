@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -12,7 +13,6 @@ permissions:
   contents: read
 
 jobs:
-
   sast:
     name: SAST - Semgrep
     runs-on: ubuntu-latest
@@ -27,6 +27,7 @@ jobs:
             -v "${{ github.workspace }}:/src" \
             semgrep/semgrep:latest \
             semgrep scan \
+            --error \
             --config /src/security/semgrep/sql-injection.yml \
             /src/application/backend/app
 
@@ -101,10 +102,11 @@ jobs:
               exit 0
             fi
 
-            echo "Waiting for AulaPay backend..."
+            echo "Waiting for AulaPay backend... attempt ${attempt}/30"
             sleep 5
           done
 
+          echo "AulaPay backend did not become healthy."
           docker compose ps
           docker compose logs
           exit 1
@@ -120,7 +122,9 @@ jobs:
 
       - name: Show containers on failure
         if: failure()
-        run: docker compose ps && docker compose logs
+        run: |
+          docker compose ps
+          docker compose logs
 
       - name: Stop AulaPay
         if: always()
@@ -143,6 +147,9 @@ jobs:
 
       - name: Display control results
         run: |
+          echo "============================================"
+          echo "AulaPay DevSecOps - Security Control Results"
+          echo "============================================"
           echo "SAST=${{ needs.sast.result }}"
           echo "SECRET_SCAN=${{ needs.secret-scan.result }}"
           echo "SCA=${{ needs.sca.result }}"
@@ -153,25 +160,39 @@ jobs:
         run: |
           BLOCKED=0
 
+          echo "============================================"
+          echo "AulaPay DevSecOps - Security Gate"
+          echo "============================================"
+
           if [ "${{ needs.sast.result }}" != "success" ]; then
             echo "BLOCK: SAST control failed."
             BLOCKED=1
+          else
+            echo "PASS: SAST control passed."
           fi
 
           if [ "${{ needs.secret-scan.result }}" != "success" ]; then
             echo "BLOCK: Secret scanning control failed."
             BLOCKED=1
+          else
+            echo "PASS: Secret scanning control passed."
           fi
 
           if [ "${{ needs.sca.result }}" != "success" ]; then
             echo "BLOCK: SCA control failed."
             BLOCKED=1
+          else
+            echo "PASS: SCA control passed."
           fi
 
           if [ "${{ needs.api-security.result }}" != "success" ]; then
             echo "BLOCK: API authorization control failed."
             BLOCKED=1
+          else
+            echo "PASS: API authorization control passed."
           fi
+
+          echo "============================================"
 
           if [ "$BLOCKED" -eq 1 ]; then
             echo "FINAL PIPELINE GATE DECISION: BLOCK"
@@ -179,3 +200,4 @@ jobs:
           fi
 
           echo "FINAL PIPELINE GATE DECISION: PASS"
+          exit 0
