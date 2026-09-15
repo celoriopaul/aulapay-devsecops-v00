@@ -1,0 +1,40 @@
+# ============================================================
+# AulaPay DevSecOps
+# Archivos que no deben almacenarse en el repositorio Git.
+# ============================================================
+
+# Variables de entorno reales.
+.env
+.env.local
+.env.production
+
+# Python.
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs y editores.
+.vscode/
+.idea/
+
+# Sistema operativo.
+.DS_Store
+Thumbs.db
+
+# Logs.
+*.log
+logs/
+
+# Archivos temporales.
+tmp/
+temp/
+
+# Evidencias locales que puedan contener información sensible.
+evidence/private/
+
+# PostgreSQL local, en caso de utilizar bind mounts en el futuro.
+postgres-data/

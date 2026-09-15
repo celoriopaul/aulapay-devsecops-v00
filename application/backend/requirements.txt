@@ -1,0 +1,16 @@
+# ============================================================
+# AulaPay Backend
+# Dependencias de ejecución de la API.
+# ============================================================
+
+# Framework web ASGI.
+fastapi==0.116.1
+
+# Servidor ASGI utilizado para ejecutar FastAPI.
+uvicorn[standard]==0.35.0
+
+# Driver PostgreSQL asíncrono.
+asyncpg==0.30.0
+
+# Gestión y validación tipada de configuración.
+pydantic-settings==2.10.1

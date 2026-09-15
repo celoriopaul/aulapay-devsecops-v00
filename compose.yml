@@ -1,0 +1,148 @@
+# ============================================================
+# AulaPay DevSecOps
+# Docker Compose
+#
+# Arquitectura inicial:
+#   - Backend: Python + FastAPI
+#   - Base de datos: PostgreSQL
+#
+# PostgreSQL permanece aislado dentro de la red Docker.
+# Únicamente el backend publica un puerto hacia el exterior.
+# ============================================================
+
+services:
+
+  # ==========================================================
+  # PostgreSQL
+  # ==========================================================
+
+  database:
+    image: postgres:17
+
+    container_name: aulapay-database
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      # Persistencia de los datos de PostgreSQL.
+      - aulapay-postgres-data:/var/lib/postgresql/data
+
+      # Scripts de inicialización.
+      # Se ejecutan cuando PostgreSQL crea el volumen por
+      # primera vez.
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+
+    networks:
+      - aulapay-network
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # PostgreSQL NO publica el puerto 5432 hacia el host.
+    #
+    # El backend accederá a la base mediante:
+    #
+    #   hostname: database
+    #   puerto:   5432
+    #
+    # utilizando exclusivamente la red interna de Docker.
+
+
+  # ==========================================================
+  # AulaPay Backend
+  # ==========================================================
+
+  backend:
+    build:
+      context: ./application/backend
+      dockerfile: Dockerfile
+
+    image: aulapay-backend:0.1.0
+
+    container_name: aulapay-backend
+
+    restart: unless-stopped
+
+    environment:
+
+      # ------------------------------------------------------
+      # Configuración general de AulaPay
+      # ------------------------------------------------------
+
+      APP_NAME: ${APP_NAME}
+      APP_ENV: ${APP_ENV}
+      APP_VERSION: ${APP_VERSION}
+
+      # ------------------------------------------------------
+      # Conexión PostgreSQL
+      # ------------------------------------------------------
+
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+    # El backend no debe iniciar hasta que PostgreSQL
+    # haya superado correctamente su healthcheck.
+    depends_on:
+      database:
+        condition: service_healthy
+
+    ports:
+      # API AulaPay.
+      - "8000:8000"
+
+    networks:
+      - aulapay-network
+
+    healthcheck:
+      # Utilizamos urllib porque forma parte de Python.
+      # De esta manera no necesitamos instalar curl dentro
+      # de la imagen del backend.
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+# ============================================================
+# Volúmenes
+# ============================================================
+
+volumes:
+
+  aulapay-postgres-data:
+    name: aulapay-postgres-data
+
+
+# ============================================================
+# Redes
+# ============================================================
+
+networks:
+
+  aulapay-network:
+    name: aulapay-network
+    driver: bridge
