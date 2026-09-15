@@ -1,0 +1,181 @@
+name: AulaPay DevSecOps Security Gate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+
+  sast:
+    name: SAST - Semgrep
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/src" \
+            semgrep/semgrep:latest \
+            semgrep scan \
+            --config /src/security/semgrep/sql-injection.yml \
+            /src/application/backend/app
+
+  secret-scan:
+    name: Secret Scan - Gitleaks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/repo" \
+            zricethezav/gitleaks:latest \
+            detect \
+            --source=/repo \
+            --no-git \
+            --config=/repo/security/gitleaks/gitleaks.toml \
+            --exit-code 1
+
+  sca:
+    name: SCA - Dependency Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run SCA control
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            python:3.13-slim \
+            python security/sca/sca_check.py
+
+  api-security:
+    name: API Security - BOLA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create CI environment
+        run: |
+          cat > .env <<'EOF'
+          APP_NAME=AulaPay API
+          APP_ENV=ci
+          APP_VERSION=0.1.0
+          POSTGRES_DB=aulapay
+          POSTGRES_USER=aulapay_app
+          POSTGRES_PASSWORD=ci_aulapay_database_password
+          DB_HOST=database
+          DB_PORT=5432
+          DB_NAME=aulapay
+          DB_USER=aulapay_app
+          DB_PASSWORD=ci_aulapay_database_password
+          EOF
+
+      - name: Start AulaPay
+        run: docker compose up -d --build
+
+      - name: Wait for backend
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:8000/api/v1/health; then
+              echo
+              echo "AulaPay backend is healthy."
+              exit 0
+            fi
+
+            echo "Waiting for AulaPay backend..."
+            sleep 5
+          done
+
+          docker compose ps
+          docker compose logs
+          exit 1
+
+      - name: Run BOLA authorization test
+        run: |
+          docker run --rm \
+            --add-host=host.docker.internal:host-gateway \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            python:3.13-slim \
+            python security/api/check_bola.py
+
+      - name: Show containers on failure
+        if: failure()
+        run: docker compose ps && docker compose logs
+
+      - name: Stop AulaPay
+        if: always()
+        run: docker compose down -v
+
+  security-gate:
+    name: Security Gate
+    runs-on: ubuntu-latest
+    if: always()
+
+    needs:
+      - sast
+      - secret-scan
+      - sca
+      - api-security
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Display control results
+        run: |
+          echo "SAST=${{ needs.sast.result }}"
+          echo "SECRET_SCAN=${{ needs.secret-scan.result }}"
+          echo "SCA=${{ needs.sca.result }}"
+          echo "API_SECURITY=${{ needs.api-security.result }}"
+
+      - name: Evaluate pipeline gate
+        shell: bash
+        run: |
+          BLOCKED=0
+
+          if [ "${{ needs.sast.result }}" != "success" ]; then
+            echo "BLOCK: SAST control failed."
+            BLOCKED=1
+          fi
+
+          if [ "${{ needs.secret-scan.result }}" != "success" ]; then
+            echo "BLOCK: Secret scanning control failed."
+            BLOCKED=1
+          fi
+
+          if [ "${{ needs.sca.result }}" != "success" ]; then
+            echo "BLOCK: SCA control failed."
+            BLOCKED=1
+          fi
+
+          if [ "${{ needs.api-security.result }}" != "success" ]; then
+            echo "BLOCK: API authorization control failed."
+            BLOCKED=1
+          fi
+
+          if [ "$BLOCKED" -eq 1 ]; then
+            echo "FINAL PIPELINE GATE DECISION: BLOCK"
+            exit 1
+          fi
+
+          echo "FINAL PIPELINE GATE DECISION: PASS"
