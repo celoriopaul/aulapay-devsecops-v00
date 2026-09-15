@@ -1,0 +1,13 @@
+AulaPay DevSecOps - Security Gate
+=======================================================
+Input: after-findings.json
+Assessment: AFTER
+
+PASS: AULAPAY-SAST-001 - RESOLVED
+PASS: AULAPAY-SECRET-001 - RESOLVED
+PASS: AULAPAY-SCA-001 - RESOLVED
+PASS: AULAPAY-API-001 - RESOLVED
+
+=======================================================
+Blocking conditions detected: 0
+FINAL GATE DECISION: PASS

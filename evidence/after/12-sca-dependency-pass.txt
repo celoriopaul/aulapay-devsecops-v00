@@ -1,0 +1,16 @@
+AulaPay DevSecOps - SCA Dependency Analysis
+=======================================================
+
+Dependency: pdf-generator-lib
+Current version: 2.4.3
+Advisory: CVE-SIM-2025-1842
+Severity: MEDIUM
+Affected versions: 2.4.1
+Fixed version: 2.4.3
+Usage: Generacion de comprobantes PDF
+Simulated advisory: True
+Status: NOT VULNERABLE
+
+=======================================================
+Vulnerable dependencies detected: 0
+SCA RESULT: PASS

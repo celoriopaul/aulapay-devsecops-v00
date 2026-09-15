@@ -1,0 +1,11 @@
+AulaPay DevSecOps - API Authorization Test
+=======================================================
+Authenticated student: 1024
+Requested student: 2048
+Expected HTTP status: 403
+
+Actual HTTP status: 403
+Response body: {"detail": "No tiene autorización para acceder a este recurso."}
+
+Object-level authorization: ENFORCED
+API SECURITY RESULT: PASS

@@ -1,0 +1,50 @@
+{
+  "assessment": "AFTER",
+  "project": "AulaPay DevSecOps",
+  "findings": [
+    {
+      "id": "AULAPAY-SAST-001",
+      "control": "SAST",
+      "finding": "SQL Injection",
+      "severity": "HIGH",
+      "validation": "CONFIRMED",
+      "decision": "FIXED",
+      "status": "RESOLVED",
+      "blocking": false,
+      "verification": "Parameterized SQL query implemented and Semgrep reports 0 findings."
+    },
+    {
+      "id": "AULAPAY-SECRET-001",
+      "control": "SECRET_SCAN",
+      "finding": "Possible API token",
+      "severity": "HIGH",
+      "validation": "SIMULATED_NOT_ACTIVE",
+      "decision": "REMOVED",
+      "status": "RESOLVED",
+      "blocking": false,
+      "verification": "Key-like example removed and Gitleaks reports no leaks."
+    },
+    {
+      "id": "AULAPAY-SCA-001",
+      "control": "SCA",
+      "finding": "CVE-SIM-2025-1842",
+      "severity": "MEDIUM",
+      "validation": "CONFIRMED",
+      "decision": "FIXED",
+      "status": "RESOLVED",
+      "blocking": false,
+      "verification": "pdf-generator-lib upgraded from 2.4.1 to simulated fixed version 2.4.3."
+    },
+    {
+      "id": "AULAPAY-API-001",
+      "control": "API_SECURITY",
+      "finding": "BOLA / Object-Level Authorization Failure",
+      "severity": "CRITICAL",
+      "validation": "CONFIRMED",
+      "decision": "FIXED",
+      "status": "RESOLVED",
+      "blocking": false,
+      "verification": "Cross-student access now returns HTTP 403 and automated API security test passes."
+    }
+  ]
+}
