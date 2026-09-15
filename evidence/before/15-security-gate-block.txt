@@ -1,0 +1,19 @@
+AulaPay DevSecOps - Security Gate
+============================================================
+Policy: AulaPay DevSecOps Security Gate
+Policy version: 1.0
+Assessment: BEFORE
+Findings evaluated: 4
+
+AULAPAY-SAST-001 | SAST | HIGH | CONFIRMED | UNRESOLVED
+AULAPAY-SECRET-001 | SECRET_SCAN | HIGH | REQUIRES_VALIDATION | PENDING
+AULAPAY-SCA-001 | SCA | MEDIUM | CONFIRMED | UNRESOLVED
+AULAPAY-API-001 | API_SECURITY | CRITICAL | CONFIRMED | UNRESOLVED
+
+Gate evaluation
+------------------------------------------------------------
+BLOCK: AULAPAY-SAST-001: HIGH confirmado.
+BLOCK: AULAPAY-API-001: CRITICAL confirmado.
+BLOCK: AULAPAY-API-001: fallo de autorizacion API no resuelto.
+
+FINAL GATE DECISION: BLOCK

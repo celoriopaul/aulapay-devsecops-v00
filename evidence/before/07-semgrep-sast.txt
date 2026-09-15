@@ -1,0 +1,44 @@
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 24 files tracked by git with 1 Code rule:
+  Scanning 24 files.
+                  
+                  
+┌────────────────┐
+│ 1 Code Finding │
+└────────────────┘
+                                                            
+    /src/application/backend/app/db/repositories/payments.py
+   ❯❯❱ security.semgrep.aulapay-sql-injection-string-concatenation
+          ❰❰ Blocking ❱❱
+          Posible SQL Injection en AulaPay: una variable controlable por el usuario se concatena directamente
+          dentro de una consulta SQL. Utilice consultas parametrizadas.                                      
+                                                                                                             
+           44┆ query = (
+           45┆     "SELECT "
+           46┆     "p.id, "
+           47┆     "s.student_code AS student_id, "
+           48┆     "p.external_reference, "
+           49┆     "p.amount, "
+           50┆     "p.currency, "
+           51┆     "p.status, "
+           52┆     "p.payment_date, "
+           53┆     "r.storage_path AS receipt_url "
+             [hid 6 additional lines, adjust with --max-lines-per-finding] 
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 1
+ • Targets scanned: 24
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 1 rule on 24 files: 1 finding.

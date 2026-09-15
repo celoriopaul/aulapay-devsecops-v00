@@ -1,0 +1,15 @@
+{
+  "component": "aulapay-receipt-generator",
+  "description": "Dependencias asociadas a la generacion de comprobantes de pago.",
+  "dependencies": [
+    {
+      "name": "pdf-generator-lib",
+      "version": "2.4.1",
+      "vulnerability": "CVE-SIM-2025-1842",
+      "severity": "MEDIUM",
+      "fixed_version": "2.4.3",
+      "usage": "Generacion de comprobantes PDF",
+      "simulated": true
+    }
+  ]
+}

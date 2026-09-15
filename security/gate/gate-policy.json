@@ -1,0 +1,17 @@
+{
+  "policy_name": "AulaPay DevSecOps Security Gate",
+  "version": "1.0",
+  "blocking_policy": {
+    "critical_confirmed": true,
+    "high_confirmed": true,
+    "api_authorization_failure": true,
+    "unresolved_real_secret": true
+  },
+  "medium_policy": {
+    "requires_decision": true,
+    "allowed_decisions": [
+      "FIXED",
+      "ACCEPTED"
+    ]
+  }
+}

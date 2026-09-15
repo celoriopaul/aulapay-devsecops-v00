@@ -1,0 +1,14 @@
+AulaPay DevSecOps - API Authorization Test
+=======================================================
+Authenticated student: 1024
+Requested student: 2048
+Expected HTTP status: 403
+
+Actual HTTP status: 200
+Response body: [{"id": 3, "student_id": "2048", "external_reference": "AULAPAY-2026-000003", "amount": "450.75", "currency": "USD", "status": "PAID", "payment_date": "2026-09-12T00:35:45.358435Z", "receipt_url": "/receipts/2026/AULAPAY-2026-000003.pdf"}]
+
+Object-level authorization: NOT ENFORCED
+Finding: BOLA/IDOR
+Severity: CRITICAL
+Status: CONFIRMED
+API SECURITY RESULT: FAIL

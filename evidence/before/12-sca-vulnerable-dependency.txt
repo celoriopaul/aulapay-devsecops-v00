@@ -1,0 +1,15 @@
+AulaPay DevSecOps - SCA
+==================================================
+Component: aulapay-receipt-generator
+Dependencies analyzed: 1
+Vulnerable dependencies: 1
+
+Dependency: pdf-generator-lib 2.4.1
+Vulnerability: CVE-SIM-2025-1842
+Severity: MEDIUM
+Fixed version: 2.4.3
+Usage: Generacion de comprobantes PDF
+Simulated: True
+Status: VULNERABLE
+--------------------------------------------------
+SCA RESULT: FAIL

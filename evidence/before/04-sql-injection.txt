@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+date: Tue, 15 Sep 2026 01:49:11 GMT
+server: uvicorn
+content-length: 670
+content-type: application/json
+
+[{"id":3,"student_id":"2048","external_reference":"AULAPAY-2026-000003","amount":"450.75","currency":"USD","status":"PAID","payment_date":"2026-09-12T00:35:45.358435Z","receipt_url":"/receipts/2026/AULAPAY-2026-000003.pdf"},{"id":2,"student_id":"1024","external_reference":"AULAPAY-2026-000002","amount":"180.00","currency":"USD","status":"PAID","payment_date":"2026-09-10T00:35:45.356421Z","receipt_url":"/receipts/2026/AULAPAY-2026-000002.pdf"},{"id":1,"student_id":"1024","external_reference":"AULAPAY-2026-000001","amount":"325.50","currency":"USD","status":"PAID","payment_date":"2026-09-05T00:35:45.352998Z","receipt_url":"/receipts/2026/AULAPAY-2026-000001.pdf"}]

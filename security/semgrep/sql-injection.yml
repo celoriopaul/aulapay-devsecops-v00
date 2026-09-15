@@ -1,0 +1,26 @@
+rules:
+  - id: aulapay-sql-injection-string-concatenation
+    message: >-
+      Posible SQL Injection en AulaPay: una variable controlable por el
+      usuario se concatena directamente dentro de una consulta SQL.
+      Utilice consultas parametrizadas.
+    severity: ERROR
+
+    languages:
+      - python
+
+    metadata:
+      category: security
+      cwe:
+        - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command"
+      confidence: HIGH
+      impact: HIGH
+      likelihood: HIGH
+      project_severity: HIGH
+
+    patterns:
+      - pattern: |
+          $QUERY = (... + $INPUT + ...)
+      - metavariable-regex:
+          metavariable: $QUERY
+          regex: "query"

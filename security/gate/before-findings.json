@@ -1,0 +1,48 @@
+{
+  "assessment": "BEFORE",
+  "findings": [
+    {
+      "id": "AULAPAY-SAST-001",
+      "control": "SAST",
+      "tool": "Semgrep",
+      "finding": "SQL Injection",
+      "severity": "HIGH",
+      "status": "CONFIRMED",
+      "decision": "UNRESOLVED",
+      "blocking": true
+    },
+    {
+      "id": "AULAPAY-SECRET-001",
+      "control": "SECRET_SCAN",
+      "tool": "Gitleaks",
+      "finding": "Possible API token",
+      "severity": "HIGH",
+      "status": "REQUIRES_VALIDATION",
+      "decision": "PENDING",
+      "blocking": false
+    },
+    {
+      "id": "AULAPAY-SCA-001",
+      "control": "SCA",
+      "tool": "Academic SCA Control",
+      "finding": "CVE-SIM-2025-1842",
+      "component": "pdf-generator-lib",
+      "version": "2.4.1",
+      "fixed_version": "2.4.3",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED",
+      "decision": "UNRESOLVED",
+      "blocking": false
+    },
+    {
+      "id": "AULAPAY-API-001",
+      "control": "API_SECURITY",
+      "tool": "AulaPay API Authorization Test",
+      "finding": "BOLA/IDOR",
+      "severity": "CRITICAL",
+      "status": "CONFIRMED",
+      "decision": "UNRESOLVED",
+      "blocking": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+ {
+  "RuleID": "aulapay-simulated-payment-api-key",
+  "Description": "Possible payment provider API token",
+  "StartLine": 8,
+  "EndLine": 8,
+  "StartColumn": 27,
+  "EndColumn": 51,
+  "Match": "sk_test_51HxxExampleToken",
+  "Secret": "sk_test_51HxxExampleToken",
+  "File": "/repo/.env.example",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 3.9434652,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [
+   "api-key",
+   "payment",
+   "academic-simulation"
+  ],
+  "Fingerprint": "/repo/.env.example:aulapay-simulated-payment-api-key:8"
+ }
+]

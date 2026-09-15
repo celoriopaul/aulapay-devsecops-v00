@@ -1,0 +1,19 @@
+title = "AulaPay DevSecOps - Gitleaks Configuration"
+
+[[rules]]
+id = "aulapay-simulated-payment-api-key"
+description = "Possible payment provider API token"
+regex = '''sk_test_[A-Za-z0-9]+'''
+secretGroup = 0
+
+tags = [
+  "api-key",
+  "payment",
+  "academic-simulation"
+]
+
+[[allowlists]]
+description = "Exclude generated evidence from secret scanning"
+paths = [
+  '''(^|/)evidence/.*'''
+]

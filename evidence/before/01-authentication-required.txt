@@ -1,0 +1,8 @@
+HTTP/1.1 401 Unauthorized
+date: Tue, 15 Sep 2026 01:29:04 GMT
+server: uvicorn
+www-authenticate: Bearer
+content-length: 40
+content-type: application/json
+
+{"detail":"Se requiere autenticación."}
